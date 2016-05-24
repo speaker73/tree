@@ -13,7 +13,8 @@ class CreateComtreesTable extends Migration
     public function up()
     {
         Schema::create('comtrees', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('increment');
+            $table->integer('id');
             $table->string('name');
             $table->float('amount');
             $table->float('total_amount')->nullable();
