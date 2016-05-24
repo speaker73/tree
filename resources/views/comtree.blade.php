@@ -20,7 +20,7 @@
         {!!$item->id != $item->parent?"<ul>":""!!}--}}
         <li id="{{$item->id}}" class="list-group-item" parent="{{$item->parent}}" amount="{{$item->amount}}" total_amount="{{$item->total_amount}}">
             <label>
-                {{--<input type="checkbox" /> --}}id:{!!$item->id!!} | name:{!!$item->name!!} | amount:{!!$item->amount!!} | total amount:{!!$item->total_amount!!} | parent:{!!$item->parent!!}
+                {{--<input type="checkbox" /> --}}id:{!!$item->id!!} | name:{!!$item->name!!} | amount:{!!$item->amount!!} | total amount from base:{!!$item->total_amount!!} | parent:{!!$item->parent!!}
             </label>
         </li>
       {!!"<ul id='ul".$item->id."'></ul>"!!}
@@ -102,8 +102,8 @@
         }
     function total_add(){
         for(var i = 1;i<=li_length;i++){
-            $( "#"+i ).append( "<label>| total:"+total(i)+"</label>" );
-
+            $("#"+i).append( "<label>| total calc:"+total(i)+"</label>" );
+            $("#"+i).attr("total_amount", total(i));
         }
     }
     total_add();
