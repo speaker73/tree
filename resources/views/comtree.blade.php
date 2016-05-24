@@ -20,7 +20,7 @@
         {!!$item->id != $item->parent?"<ul>":""!!}--}}
         <li id="{{$item->id}}" class="list-group-item" parent="{{$item->parent}}" amount="{{$item->amount}}" total_amount="{{$item->total_amount}}">
             <label>
-                {{--<input type="checkbox" /> --}}id:{!!$item->id!!} | name:{!!$item->name!!} | amount:{!!$item->amount!!} | total amount from base:{!!$item->total_amount!!} | parent:{!!$item->parent!!}
+                {{--<input type="checkbox" /> --}}id:{!!$item->id!!} | name:{!!$item->name!!} | amount:{!!$item->amount!!} |{{-- total amount from base:{!!$item->total_amount!!}--}} parent:{!!$item->parent!!}
             </label>
         </li>
       {!!"<ul id='ul".$item->id."'></ul>"!!}
@@ -44,10 +44,10 @@
                 <label for="input_amount">Amount</label>
                 <input type="text" class="form-control" id="input_amount" placeholder="0" name="amount">
             </div>
-            <div class="form-group">
+           {{-- <div class="form-group">
                 <label for="input_total_amount">Total amount</label>
                 <input type="text" class="form-control" id="input_total_amount" placeholder="0" name="total_amount">
-            </div>
+            </div>--}}
             <div class="form-group">
                 <label for="input_parent">Parent</label>
                 <input type="text" class="form-control" id="input_parent" placeholder="1" name="parent">
@@ -61,8 +61,10 @@
         </div>
 </div>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+{{--
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+--}}
 <script type="text/javascript">
 
 
@@ -100,14 +102,38 @@
             console.log("total:"+total_amount_id);*/
         return total_amount_id;
         }
-    function total_add(){
-        for(var i = 1;i<=li_length;i++){
+    function total_add(i){
             $("#"+i).append( "<label>| total calc:"+total(i)+"</label>" );
             $("#"+i).attr("total_amount", total(i));
+    }
+    function first_add(){
+        for(var i = 1;i<=li_length;i++){
+            var our_parent = $('#' + i).attr('parent');
+            var our_parent_length =$('.list-group-item[parent="'+i+'"]').length;
+            if(i != our_parent){
+                if(our_parent_length == 0){
+                    total_add(i);
+                }
+            }
+        }
+         for(var i2 = 1;i2<=li_length;i2++){
+             var our_parent2 = $('#' + i2).attr('parent');
+             var our_parent_length2 =$('.list-group-item[parent="'+i2+'"]').length;
+            if(i2 != our_parent2){
+               if(our_parent_length2 > 0){
+                   total_add(i2);
+               }
+            }
+         }
+        for(var i3 = 1;i3<=li_length;i3++){
+            var our_parent3 = $('#' + i3).attr('parent');
+            var our_parent_length3 = $('.list-group-item[parent="'+i3+'"]').length;
+            if(i3==our_parent3) {
+                total_add(i3)
+            }
         }
     }
-    total_add();
-
+    first_add()
 </script>
 </body>
 </html>
