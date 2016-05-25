@@ -16,7 +16,8 @@
     <div class="content">
 <ul class="list-group" id="tree">
     @foreach($comtrees as $item)
-
+        {{--{!!$item->parent == 2?"<ul>":""!!}
+        {!!$item->id != $item->parent?"<ul>":""!!}--}}
         <li id="{{$item->id}}" class="list-group-item" parent="{{$item->parent}}" amount="{{$item->amount}}" total_amount="{{$item->amount}}" level="">
             <form action="{{ url('destroy/'.$item->id) }}" method="POST">
                 {{ csrf_field() }}
@@ -28,18 +29,21 @@
             </form>
             <button type="button" class="btn btn-info" data-toggle="modal" data-target="#Modal{{$item->id}}">Edit</button>
             <label>
-                id:{!!$item->id!!} | parent:{!!$item->parent!!} | name:{!!$item->name!!} |  Earnings:${!!$item->amount!!}K {{-- total amount from base:{!!$item->total_amount!!}--}}
+                {{--<input type="checkbox" /> --}}id:{!!$item->id!!} | parent:{!!$item->parent!!} | name:{!!$item->name!!} | amount:${!!$item->amount!!}K {{-- total amount from base:{!!$item->total_amount!!}--}}
             </label>
         </li>
       {!!"<ul id='ul".$item->id."'></ul>"!!}
-
+       {{--{!!$item->parent == 2?"</ul>":""!!}--}}
     @endforeach
 </ul>
 
         <form action="{{ url('/add')}}" method="POST" class="form-inline">
             {{ csrf_field() }}
 
-
+          {{--  name:<input type="text" name="name">
+            amount: <input type="text" name="amount">
+            total_amount: <input type="text" name="total_amount">
+            parent: <input type="text" name="parent">--}}
             <div class="form-group">
             <label for="iput_name">id</label>
                 <input type="text" class="form-control" id="input_id" placeholder="1" name="id" readonly>
@@ -52,7 +56,7 @@
             <label for="iput_name">Name</label>
                 <input type="text" class="form-control" id="input_name" placeholder="Company" name="name">
             </div>
-            <label for="input_amount">Earnings</label>
+            <label for="input_amount">Amount</label>
             <div class="input-group">
                 <div class="input-group-addon">$</div>
                 <input type="text" class="form-control" id="input_amount" placeholder="0" name="amount">
@@ -93,7 +97,7 @@
                             <input type="text" class="form-control" id="input_name{{$item->name}}" value="{{$item->name}}" name="name">
                         </div>
                         <div class="form-group">
-                            <label for="input_amount">Earnings</label>
+                            <label for="input_amount">Amount</label>
                             <div class="input-group">
                                 <div class="input-group-addon">$</div>
                             <input type="text" class="form-control" id="input_amount{{$item->name}}" value="{{$item->amount}}" name="amount">
@@ -131,9 +135,9 @@
     var li_length = $('.list-group-item').length;
     var tree_arr = [];
     @foreach($comtrees as $item)
-    tree_arr[tree_arr.length] = {{$item->id}};   /* Add php data from js array */
+    tree_arr[tree_arr.length] = {{$item->id}};
     @endforeach
-
+/*console.log(tree_arr);*/
     function tree_builder(){
             for( var i=0;i<=li_length;i++) {
                 var parent = $('#' + tree_arr[i]).attr('parent');
@@ -147,7 +151,7 @@
             }
     }
     tree_builder();
-                /*Edit form, add const data input*/
+                /*Edit form*/
                 function add_value(){
                     var number = tree_arr[tree_arr.length-1] + 1
                     $("#input_parent").attr("value", number);
@@ -175,14 +179,38 @@
     }
                /* Add total amount from tree*/
     function total_add(i){
-             $("#"+i).append( "<label>| Total Earnings:$"+total_calc(i)+"K</label>" );
+             $("#"+i).append( "<label>| total calc:$"+total_calc(i)+"K</label>" );
              $("#"+i).attr("total_amount", total_calc(i));
     }
-
-
                 /*The order of addition*/
 
+function order(){
 
+    /* Добавляем елементы у которых есть child, но которые тоже имеют родителя */
+    for(var i=0;i<tree_arr.length;i++){
+        var our_parent = $('#' + tree_arr[i]).attr('parent');
+        var our_parent_length = $('.list-group-item[parent="'+tree_arr[i]+'"]').length;
+        if(our_parent_length > 0 ){
+            if(tree_arr[i]!= our_parent){
+                total_add(tree_arr[i]);
+            }
+
+        }
+    }
+
+    /* добавляем елементы без родителей */
+
+    for(var i2=0;i2<tree_arr.length;i2++){
+        var our_parent2 = $('#' + tree_arr[i2]).attr('parent');
+        var our_parent_length2 = $('.list-group-item[parent="'+tree_arr[i2]+'"]').length;
+        if(our_parent2 == tree_arr[i2] ){
+
+            total_add(tree_arr[i2]);
+
+
+        }
+    }
+}
                 var level_arr = [];
   function order_add_level(){
 
@@ -191,13 +219,13 @@
           var our_parent_length =$('.list-group-item[parent="'+tree_arr[i]+'"]').length;
           if(our_parent == tree_arr[i]){
               $("#"+tree_arr[i]).attr("level", 1);
-
+              /*tree_arr.splice(i, 1);*/
               level_arr[level_arr.length] = 1;
           }
           if(our_parent != tree_arr[i])
           {
               $("#"+tree_arr[i]).attr("level", 2);
-
+              /*tree_arr.splice(i, 1);*/
               level_arr[level_arr.length] = 2;
           }
           var id_parent_level = Number($('#' + our_parent).attr('level'));
@@ -215,13 +243,15 @@
                     if (a > b) return -1;
                 }
                 level_arr.sort(sortDown);
-
+               /* var iter = Math.max.apply( Math, level_arr);
+                var max_level = Math.max.apply( Math, level_arr);*/
                 function order_calc() {
                     console.log("Level arr: "+level_arr+" Tree arr: "+tree_arr);
                     for(var i = 0;i<tree_arr.length;i++){
-                        var level = level_arr[i];
+
 
                         for(var j = 0;j<level_arr.length;j++){
+                            var level = level_arr[i];
                         var id_level = Number($('#' + tree_arr[j]).attr('level'));
                             console.log("level="+level+" id_level="+id_level);
 
@@ -229,11 +259,15 @@
                             console.log(level+" Print it!"+id_level);
                             total_add(tree_arr[j]);
                             console.log("delete level_arr: "+i+" value: "+level_arr[i]);
-
+                            /*level_arr.splice(i, 1);*/
                             delete level_arr[i];
                             console.log(level_arr);
 
-
+                           /* console.log("splice tree_arr: "+j+" value: "+tree_arr[j]);*/
+                          /*  tree_arr.splice(j, 1);*/
+                            console.log("delete tree_arr: "+j+" value: "+tree_arr[i]);
+                            delete tree_arr[j];
+                            console.log(tree_arr);
                         }
                         }
                     }
