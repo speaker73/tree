@@ -223,24 +223,24 @@
                     if (a > b) return -1;
                 }
                 level_arr.sort(sortDown);
-               /* var iter = Math.max.apply( Math, level_arr);
-                var max_level = Math.max.apply( Math, level_arr);*/
+                var iter = Math.max.apply( Math, level_arr);
+                var max_level = Math.max.apply( Math, level_arr);
                 function order_calc() {
-                    console.log("Level arr: "+level_arr+" Tree arr: "+tree_arr);
-                    for(var i = 0;i<tree_arr.length;i++){
-                        var level = level_arr[i];
+
+                    for(var i = max_level;i>0;i--){
+
 
                         for(var j = 0;j<level_arr.length;j++){
+                            var level = i;
                             var id_level = Number($('#' + tree_arr[j]).attr('level'));
-                            console.log("level="+level+" id_level="+id_level);
 
+                            console.log("level:"+i+" level_id: "+id_level+" id:"+tree_arr[j]);
                             if(level==id_level){
                                 console.log(level+" Print it! "+tree_arr[j]);
                                 total_add(tree_arr[j]);
-                               /* console.log("delete level_arr: "+i+" value: "+level_arr[i]);
-                                /!*level_arr.splice(i, 1);*!/
-                                delete level_arr[i];
-                                console.log("level_arr:"+level_arr);*/
+                                console.log("delete level_arr: "+i+" value: "+level_arr[i]);
+                                /*level_arr.splice(i, 1);*/
+
 
                                  /*console.log("splice tree_arr: "+j+" value: "+tree_arr[j]);*/
                                  /* tree_arr.splice(j, 1);*/
