@@ -254,9 +254,10 @@ function order(){
                 function order_calc() {
                     console.log("Level arr: "+level_arr+" Tree arr: "+tree_arr);
                     for(var i = 0;i<tree_arr.length;i++){
-                        var level = level_arr[i];
+
 
                         for(var j = 0;j<level_arr.length;j++){
+                            var level = level_arr[i];
                             var id_level = Number($('#' + tree_arr[j]).attr('level'));
                             console.log("level="+level+" id_level="+id_level);
 
@@ -269,8 +270,10 @@ function order(){
                                 console.log(level_arr);
 
                                 /* console.log("splice tree_arr: "+j+" value: "+tree_arr[j]);*/
-                                /*tree_arr.splice(j, 1);*/
-                                /*delete tree_arr[j];*/
+                                /*  tree_arr.splice(j, 1);*/
+                                console.log("delete tree_arr: "+j+" value: "+tree_arr[i]);
+                                delete tree_arr[j];
+                                console.log(tree_arr);
                             }
                         }
                     }
